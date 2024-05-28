@@ -1,2 +1,2 @@
 # kafka-acl-operator
-Acl operator to manage acl of kafka topic in Confluent kafka platform.
+Acl operator and acl chart to manage acl of kafka topic in Confluent kafka platform.

@@ -1,0 +1,12 @@
+defaults:
+  namespace: wowsome
+  permissionType: "ALLOW"
+  patternType: "PREFIXED"
+  resourceType: "TOPIC"
+  
+kafkaACL:
+  name: my-kafka-acl
+  principal: "User:wow"
+  resourceName: "my-kafka-topic"
+  operation: "READ"
+

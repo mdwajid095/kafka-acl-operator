@@ -1,0 +1,12 @@
+apiVersion: kafka.example.com/v1alpha1
+kind: KafkaACL
+metadata:
+  name: my-kafka-acl
+  namespace: wowsome
+spec:
+  principal: "User:wow"
+  resourceType: "TOPIC"
+  resourceName: "my-kafka-topic"
+  operation: "READ"
+  permissionType: "ALLOW"
+  patternType: "LITERAL"

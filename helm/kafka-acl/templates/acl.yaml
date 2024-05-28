@@ -1,0 +1,12 @@
+apiVersion: kafka.example.com/v1alpha1
+kind: KafkaACL
+metadata:
+  name: {{ .Values.kafkaACL.name }}
+  namespace: {{ default .Values.defaults.namespace .Values.kafkaACL.namespace }}
+spec:
+  principal: {{ .Values.kafkaACL.principal }}
+  resourceType: {{ default .Values.defaults.resourceType .Values.kafkaACL.resourceType }}
+  resourceName: {{ .Values.kafkaACL.resourceName }}
+  operation: {{ .Values.kafkaACL.operation }}
+  permissionType: {{ default .Values.defaults.permissionType .Values.kafkaACL.permissionType }}
+  patternType: {{ default .Values.defaults.patternType .Values.kafkaACL.patternType }}
