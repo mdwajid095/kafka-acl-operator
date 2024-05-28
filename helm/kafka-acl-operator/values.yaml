@@ -1,0 +1,11 @@
+#config of acl operator
+#
+
+namespace: wowsome
+replicaCount: 1
+image:
+  repository: docker.io/mdwajid095/kafka-acl-operator
+  pullPolicy: IfNotPresent
+  tag: "py-v1.0"
+secret:
+  name: acl-operator-properties
