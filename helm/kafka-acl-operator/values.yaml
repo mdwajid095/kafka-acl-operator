@@ -1,0 +1,16 @@
+#config of acl operator
+#
+replicaCount: 1
+image:
+  repository: docker.io/mdwajid095/kafka-acl-operator
+  pullPolicy: IfNotPresent
+  tag: "v1.0"
+
+secret:
+  name: acl-operator-secret
+  path: /mnt/sslcerts
+
+#ENV is mandatory for acl-operator
+env:
+  ADM_PROPERTIES_PATH: /mnt/sslcerts/adm.properties
+

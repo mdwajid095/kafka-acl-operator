@@ -1,6 +1,7 @@
 import os
 import time
 import logging
+import configparser
 from kubernetes import client, config, watch
 from confluent_kafka.admin import AdminClient, AclBinding, AclBindingFilter, AclOperation, AclPermissionType, ResourceType, ResourcePatternType
 
@@ -13,14 +14,21 @@ config.load_kube_config()
 # Initialize Kubernetes API client
 api = client.CustomObjectsApi()
 
+# Load properties from adm.properties file
+config_parser = configparser.ConfigParser()
+adm_properties_path = os.getenv('ADM_PROPERTIES_PATH')
+config_parser.read(adm_properties_path)
+#config_parser.read('adm.properties')
+kafka_properties = config_parser['ACL_CONFIG']
+
 # Kafka AdminClient configuration
 kafka_admin_client = AdminClient({
-    'bootstrap.servers': 'kafka.raittcs01.emp-dev.gcp.de.pri.o2.com:9092',
-    'security.protocol': 'SSL',
-    'ssl.ca.location': '/home/md_wajid_external_gcp_telefonica/tls-kafka-external/cacerts.pem',
-    'ssl.certificate.location': '/home/md_wajid_external_gcp_telefonica/tls-kafka-external/fullchain.pem',
-    'ssl.key.location': '/home/md_wajid_external_gcp_telefonica/tls-kafka-external/privkey.pem',
-    'ssl.key.password': 'mystorepassword'  # Replace with your actual keystore password
+    'bootstrap.servers': kafka_properties['bootstrap.servers'],
+    'security.protocol': kafka_properties['security.protocol'],
+    'ssl.ca.location': kafka_properties['ssl.ca.location'],
+    'ssl.certificate.location': kafka_properties['ssl.certificate.location'],
+    'ssl.key.location': kafka_properties['ssl.key.location'],
+    'ssl.key.password': kafka_properties['ssl.key.password']
 })
 
 def apply_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type):
@@ -72,10 +80,11 @@ def main():
     resource_version = ''
     while True:
         try:
-            stream = watch.Watch().stream(api.list_namespaced_custom_object,
+            stream = watch.Watch().stream(api.list_cluster_custom_object,
+            #stream = watch.Watch().stream(api.list_namespaced_custom_object,
                                           group="kafka.example.com",
                                           version="v1alpha1",
-                                          namespace="confluent",
+                                          #namespace="wowsome",
                                           plural="kafkaacls",
                                           resource_version=resource_version)
 
@@ -90,7 +99,7 @@ def main():
                 name = spec['resourceName']
                 operation = spec['operation']
                 permission_type = spec['permissionType']
-                resource_pattern_type = spec['patternType'] # Read pattern type
+                resource_pattern_type = spec['patternType']
 
                 if event_type == 'ADDED' or event_type == 'MODIFIED':
                     apply_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type)

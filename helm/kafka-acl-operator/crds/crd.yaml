@@ -27,7 +27,7 @@ spec:
                   type: string
                 patternType:
                   type: string
-  scope: Namespaced
+  scope: Cluster
   names:
     plural: kafkaacls
     singular: kafkaacl

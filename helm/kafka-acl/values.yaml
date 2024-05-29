@@ -5,8 +5,11 @@ defaults:
   resourceType: "TOPIC"
   
 kafkaACL:
-  name: my-kafka-acl
+- name: my-kafka-acl
   principal: "User:wow"
   resourceName: "my-kafka-topic"
   operation: "READ"
-
+- name: my-kafka-acls
+  principal: "User:wow"
+  resourceName: "my-kafka-topic"
+  operation: "WRITE"
