@@ -9,7 +9,13 @@ from confluent_kafka.admin import AdminClient, AclBinding, AclBindingFilter, Acl
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Load Kubernetes configuration
-config.load_kube_config()
+try:
+    config.load_incluster_config()  # Try to load the in-cluster config
+except config.config_exception.ConfigException:
+    try:
+        config.load_kube_config()  # If the in-cluster config can't be loaded, try the kubeconfig
+    except config.config_exception.ConfigException:
+        raise RuntimeError("Could not load Kubernetes configuration")
 
 # Initialize Kubernetes API client
 api = client.CustomObjectsApi()
@@ -49,7 +55,7 @@ def apply_kafka_acl(principal, restype, name, operation, permission_type, resour
             permission_type_enum
         )
         kafka_admin_client.create_acls([acl_binding])
-        logging.info(f"Applied ACL: {principal} {permission_type} {operation} on {restype}:{name} with pattern {resource_pattern_type}")
+        logging.info(f"Applied ACL: {principal} {permission_type} {operation} on {restype}:{name} with pattern {resource_pattern_type} in namespace: {os.getenv('NAMESPACE')}")
     except Exception as e:
         logging.error(f"Failed to apply ACL: {e}")
 
@@ -71,7 +77,7 @@ def delete_kafka_acl(principal, restype, name, operation, permission_type, resou
             permission_type_enum
         )
         kafka_admin_client.delete_acls([acl_binding_filter])
-        logging.info(f"Deleted ACL: {principal} {permission_type} {operation} on {restype}:{name} with pattern {resource_pattern_type}")
+        logging.info(f"Deleted ACL: {principal} {permission_type} {operation} on {restype}:{name} with pattern {resource_pattern_type} in namespace: {os.getenv('NAMESPACE')}")
     except Exception as e:
         logging.error(f"Failed to delete ACL: {e}")
 
@@ -80,10 +86,11 @@ def main():
     resource_version = ''
     while True:
         try:
-            stream = watch.Watch().stream(api.list_cluster_custom_object,
-            #stream = watch.Watch().stream(api.list_namespaced_custom_object,
+            #stream = watch.Watch().stream(api.list_cluster_custom_object,
+            stream = watch.Watch().stream(api.list_namespaced_custom_object,
                                           group="kafka.example.com",
                                           version="v1alpha1",
+                                          namespace= os.getenv('NAMESPACE'),
                                           #namespace="wowsome",
                                           plural="kafkaacls",
                                           resource_version=resource_version)

@@ -2,9 +2,9 @@
 #
 replicaCount: 1
 image:
-  repository: docker.io/mdwajid095/kafka-acl-operator
-  pullPolicy: IfNotPresent
-  tag: "v1.0"
+  repository: mdwajid095/kafka-acl-operator 
+  pullPolicy: Always
+  tag: "v1.0-alpha"
 
 secret:
   name: acl-operator-secret

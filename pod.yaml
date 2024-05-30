@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: acl-app
+  labels:
+    app: acl-app
+spec:
+  containers:
+  - name: acl-app
+    image: mdwajid095/kafka-acl-operator:v1.0-alpha
+    imagePullPolicy: Always
+    command: ["sleep", "infinity"]
+    env:
+    - name: NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: ADM_PROPERTIES_PATH
+      value: /mnt/sslcerts/adm.properties
+    volumeMounts:
+    - name: acl-operator-properties
+      mountPath: /mnt/sslcerts
+  volumes:
+  - name: acl-operator-properties
+    secret:
+      secretName: acl-operator-secret
