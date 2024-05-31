@@ -22,3 +22,6 @@ Home-page: https://github.com/kubernetes-client/python
 Author: Kubernetes
 
 ```
+# info
+Both Namespaced and Cluster scoped kafka-acl-operator and CRDs are available here.
+Docker image with tag `alpha` means, it'si only Namespaced scoped images. And tag without `alpha` will handle both Namespaced and Cluster scoped image.
