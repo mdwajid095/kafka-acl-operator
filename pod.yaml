@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: acl-app
-    image: mdwajid095/kafka-acl-operator:v1.0-alpha
+    image: mdwajid095/kafka-acl-operator:v1-ns
     imagePullPolicy: Always
     command: ["sleep", "infinity"]
     env:

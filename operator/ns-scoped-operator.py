@@ -88,7 +88,7 @@ def main():
         try:
             #stream = watch.Watch().stream(api.list_cluster_custom_object,
             stream = watch.Watch().stream(api.list_namespaced_custom_object,
-                                          group="kafka.example.com",
+                                          group="kafka.namespaced.com",
                                           version="v1alpha1",
                                           namespace= os.getenv('NAMESPACE'),
                                           #namespace="wowsome",

@@ -13,4 +13,14 @@ export NAMESPACE=wowsome
 
 # info
 File `ns-scoped-operator.py` only handle the namespaced scoped CDRs.
+File `cl-scoped-operator.py` only handle the cluster scoped CDRs.
 And `kafka-acl-operator.py` handle both namespaced and cluster scoped CRDs.
+
+Both Namespaced and Cluster scoped kafka-acl-operator and CRDs are available here.
+
+For `cluster` scoped acl operator, use image tag with suffix `'-cl'`
+
+For `namespaced` scoped acl operator, use image tag with suffix `'-ns'`
+
+For both `cluster and namespaced` scoped acl operator, use image tag without suffix `'-ns' or '-cl'`
+

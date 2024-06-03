@@ -1,0 +1,11 @@
+apiVersion: kafka.cluster.com/v1alpha1
+kind: KafkaACL
+metadata:
+  name: my-kafka-acl-cl
+spec:
+  principal: "User:alice"
+  resourceType: "TOPIC"
+  resourceName: "tef.de.topas.BarringEvents-MM-v1"
+  operation: "READ"
+  permissionType: "ALLOW"
+  patternType: "LITERAL"

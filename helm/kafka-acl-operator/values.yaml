@@ -4,7 +4,7 @@ replicaCount: 1
 image:
   repository: mdwajid095/kafka-acl-operator 
   pullPolicy: Always
-  tag: "v1.0-alpha"
+  tag: "v1-cl"
 
 secret:
   name: acl-operator-secret
