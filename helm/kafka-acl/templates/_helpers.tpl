@@ -6,6 +6,16 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
+
+{{/*
+Creating fully qualified name for the ACL CRs
+*/}}
+{{- define "generateName" }}
+{{- $parts := splitList ":" .principal -}}
+{{- $secondPart := index $parts 1 -}}
+{{- print ($secondPart | lower) "-" (.operation | lower) "-" (.resourceName | lower) -}}
+{{- end -}}
+
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.

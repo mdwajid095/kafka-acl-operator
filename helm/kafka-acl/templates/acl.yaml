@@ -1,8 +1,8 @@
 {{- range .Values.kafkaACL }}
-apiVersion: kafka.example.com/v1alpha1
+apiVersion: kafka.namespaced.com/v1alpha1
 kind: KafkaACL
 metadata:
-  name: {{ .name }}
+  name: {{ include "generateName" . }}
   namespace: {{ default $.Values.defaults.namespace .namespace }}
   labels:
     {{- include "kafka-acl.labels" $ | nindent 4 }}
