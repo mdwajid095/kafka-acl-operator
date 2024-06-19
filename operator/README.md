@@ -11,9 +11,15 @@ export ADM_PROPERTIES_PATH=/home/wajid/adm.properties
 export NAMESPACE=wowsome
 `
 
+# unit-testing
+Below is the command to do the unit testing for kafka_acl_operator
+`python3 -m unittest test_kafka_acl_operator.py`
+
 # info
 File `ns-scoped-operator.py` only handle the namespaced scoped CDRs.
+
 File `cl-scoped-operator.py` only handle the cluster scoped CDRs.
+
 And `kafka-acl-operator.py` handle both namespaced and cluster scoped CRDs.
 
 Both Namespaced and Cluster scoped kafka-acl-operator and CRDs are available here.
