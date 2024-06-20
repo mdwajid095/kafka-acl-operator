@@ -13,6 +13,7 @@ export NAMESPACE=wowsome
 
 # unit-testing
 Below is the command to do the unit testing for kafka_acl_operator
+
 `python3 -m unittest test_kafka_acl_operator.py`
 
 # info

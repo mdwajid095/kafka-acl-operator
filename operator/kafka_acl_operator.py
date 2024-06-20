@@ -97,8 +97,17 @@ def process_event(event, scope):
     permission_type = spec['permissionType']
     resource_pattern_type = spec['patternType']
 
-    if event_type == 'ADDED' or event_type == 'MODIFIED':
+    if event_type == 'ADDED':
         apply_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
+    elif event_type == 'MODIFIED':
+        original_permission_type = permission_type
+        if permission_type == 'ALLOW':
+            permission_type = 'DENY'
+            delete_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
+        else:
+            permission_type = 'ALLOW'
+            delete_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
+        apply_kafka_acl(principal, restype, name, operation, original_permission_type, resource_pattern_type, scope)
     elif event_type == 'DELETED':
         delete_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
 
