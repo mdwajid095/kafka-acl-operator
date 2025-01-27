@@ -1,5 +1,5 @@
 # kafka-acl-operator
-Acl operator and acl chart to manage acl of kafka topic in Confluent kafka platform.
+Acl operator manage acl of kafka topic in Confluent kafka platform k8s CR ways.
 
 # prerequisite for operator
 One property file required to authenticate with kafka cluster. Example property (adm.properties) added here.
@@ -9,6 +9,8 @@ Like,
 `
 export ADM_PROPERTIES_PATH=/home/wajid/adm.properties
 export NAMESPACE=wowsome
+export REST_URL=http://kafka.wowsome.svc.cluster.local:8090
+export CLUSTER_ID=QNCeE1QyS1yGuW6_Vb3VRwow
 `
 
 # unit-testing
@@ -17,17 +19,11 @@ Below is the command to do the unit testing for kafka_acl_operator
 `python3 -m unittest test_kafka_acl_operator.py`
 
 # info
-File `ns-scoped-operator.py` only handle the namespaced scoped CDRs.
 
-File `cl-scoped-operator.py` only handle the cluster scoped CDRs.
+File `kafka_acl_operator.py` is the acl operator which handle list of array of topics per acl CR. e,g. `acl-ns.yaml`
+This operator auto handle the acls in kafka cluster after addition or removal of topic in acls CR.
 
-And `kafka-acl-operator.py` handle both namespaced and cluster scoped CRDs.
-
-Both Namespaced and Cluster scoped kafka-acl-operator and CRDs are available here.
-
-For `cluster` scoped acl operator, use image tag with suffix `'-cl'`
-
-For `namespaced` scoped acl operator, use image tag with suffix `'-ns'`
-
-For both `cluster and namespaced` scoped acl operator, use image tag without suffix `'-ns' or '-cl'`
+# docker
+Image is also available for acl operator with below naming convention.
+Docker image: `docker pull mdwajid095/kafka-acl-operator:v1`
 

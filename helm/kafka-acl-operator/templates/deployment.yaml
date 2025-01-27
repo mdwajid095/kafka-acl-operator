@@ -4,7 +4,7 @@ metadata:
   name: {{ .Chart.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
@@ -22,8 +22,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: ADM_PROPERTIES_PATH
-          value: {{ .Values.env.ADM_PROPERTIES_PATH }}
+        {{- range $key, $value := .Values.env }}
+        - name: {{ $key }}
+          value: {{ $value }}
+        {{- end }}
         volumeMounts:
         - name: acl-operator-properties
           mountPath: {{ .Values.secret.path }}

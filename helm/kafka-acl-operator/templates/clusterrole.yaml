@@ -3,7 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: kafka-acl-role
 rules:
-- apiGroups: ["kafka.namespaced.com", "kafka.cluster.com"]
+- apiGroups: ["emp.namespaced.com", "emp.cluster.com"]
   resources: ["kafkaacls"]
   verbs: ["get", "watch", "list"]
 ---

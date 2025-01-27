@@ -23,10 +23,9 @@ Author: Kubernetes
 
 ```
 # info
-Both Namespaced and Cluster scoped kafka-acl-operator and CRDs are available here.
+File `kafka_acl_operator.py` is the acl operator which handle list of array of topics per acl CR. e,g. `acl-ns.yaml`
+This operator auto handle the acls in kafka cluster after addition or removal of topic in acls CR.
 
-For `cluster` scoped acl operator, use image tag with suffix `'-cl'`
-
-For `namespaced` scoped acl operator, use image tag with suffix `'-ns'`
-
-For both `cluster and namespaced` scoped acl operator, use image tag without suffix `'-ns' or '-cl'`
+# docker
+Image is also available for acl operator with below naming convention.
+Docker image: `docker pull mdwajid095/kafka-acl-operator:v1`

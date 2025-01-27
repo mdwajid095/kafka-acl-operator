@@ -1,16 +1,16 @@
-#config of acl operator
-#
-replicaCount: 1
+# values for acl operator
 image:
   repository: mdwajid095/kafka-acl-operator 
   pullPolicy: Always
-  tag: "v1-cl"
+  tag: "v1"
 
 secret:
   name: acl-operator-secret
   path: /mnt/sslcerts
 
-#ENV is mandatory for acl-operator
+# ENV is mandatory for acl-operator
 env:
   ADM_PROPERTIES_PATH: /mnt/sslcerts/adm.properties
+  REST_URL: http://kafka.wowsome.svc.cluster.local:8090
+  CLUSTER_ID: QNCeE1QyS1yGuW6_Vb3VRwow
 

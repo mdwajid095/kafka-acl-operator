@@ -1,12 +1,15 @@
-apiVersion: kafka.namespaced.com/v1alpha1
+apiVersion: emp.namespaced.com/v1alpha1
 kind: KafkaACL
 metadata:
   name: my-kafka-acl-ns
-  namespace: confluent
+  namespace: wowsome
 spec:
-  principal: "User:foo"
+  principal: "User:wow"
   resourceType: "TOPIC"
-  resourceName: "tef.de.topas.BarringEvents-MM-v1"
+  resourceName:
+    - "tef.de.testing-v1"
+    - "tef.de.testing-v2"
+    - "tef.de.testing-v3"
   operation: "READ"
   permissionType: "ALLOW"
   patternType: "LITERAL"
