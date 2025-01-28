@@ -188,7 +188,7 @@ def watch_cluster():
     while True:
         try:
             stream = watch.Watch().stream(api.list_cluster_custom_object,
-                                          group="kafka.cluster.com",
+                                          group="emp.cluster.com",
                                           version="v1alpha1",
                                           plural="kafkaacls",
                                           resource_version=resource_version)
