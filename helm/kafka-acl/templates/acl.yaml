@@ -1,15 +1,19 @@
 {{- range .Values.kafkaACL }}
-apiVersion: kafka.namespaced.com/v1alpha1
+apiVersion: emp.namespaced.com/v1alpha1
 kind: KafkaACL
 metadata:
   name: {{ include "generateName" . }}
   namespace: {{ default $.Values.defaults.namespace .namespace }}
   labels:
-    {{- include "kafka-acl.labels" $ | nindent 4 }}
+    emp.telefonica.de/bus: {{ .bus }}
+    {{- include "emp-acl.labels" $ | nindent 4 }}
 spec:
-  principal: {{ .principal }}
+  principal: {{ .principal | quote}}
   resourceType: {{ default $.Values.defaults.resourceType .resourceType }}
-  resourceName: {{ .resourceName }}
+  resourceName:
+    {{- range .resourceName }}
+    - {{ . }}
+    {{- end }}
   operation: {{ .operation }}
   permissionType: {{ default $.Values.defaults.permissionType .permissionType }}
   patternType: {{ default $.Values.defaults.patternType .patternType }}
