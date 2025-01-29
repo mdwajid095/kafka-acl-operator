@@ -35,5 +35,4 @@ spec:
     singular: kafkaacl
     kind: KafkaACL
     shortNames:
-      - acl
       - acls
