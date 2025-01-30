@@ -10,7 +10,6 @@ Like,
 export ADM_PROPERTIES_PATH=/home/wajid/adm.properties
 export NAMESPACE=wowsome
 export REST_URL=http://kafka.wowsome.svc.cluster.local:8090
-export CLUSTER_ID=QNCeE1QyS1yGuW6_Vb3VRwow
 `
 
 # unit-testing

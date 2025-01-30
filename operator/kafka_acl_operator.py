@@ -32,7 +32,16 @@ config_parser.read(adm_properties_path)
 kafka_properties = config_parser['ACL_CONFIG']
 namespace = os.getenv('NAMESPACE', "wowsome")
 rest_url = os.getenv('REST_URL', "http://kafka.wowsome.svc.cluster.local:8090")
-cluster_id = os.getenv('CLUSTER_ID', "QNCeE1QyS1yGuW6_Vb3VRw")
+#cluster_id = os.getenv('CLUSTER_ID', "QNCeE1QyS1yGuW6_Vb3VRw")
+url = f"{rest_url}/kafka/v3/clusters"
+response = rq.get(url)
+if response.status_code == 200:
+    data = response.json()
+    cluster_id = data['data'][0]['cluster_id']
+    # print(f"Cluster ID: {cluster_id}")
+else:
+    logging.error(f"Failed to retrieve CLUSTER_ID. Status code: {response.status_code}")
+
 # Kafka AdminClient configuration
 kafka_admin_client = AdminClient({
     'bootstrap.servers': kafka_properties['bootstrap.servers'],
