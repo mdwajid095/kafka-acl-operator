@@ -19,8 +19,6 @@ spec:
       value: /mnt/sslcerts/adm.properties
     - name: REST_URL
       value: http://kafka.wowsome.svc.cluster.local:8090
-    - name: CLUSTER_ID
-      value: QNCeE1QyS1yGuW6_Vb3VRwow
     volumeMounts:
     - name: acl-operator-properties
       mountPath: /mnt/sslcerts
