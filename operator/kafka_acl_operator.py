@@ -28,11 +28,10 @@ api = client.CustomObjectsApi()
 config_parser = configparser.ConfigParser()
 adm_properties_path = os.getenv('ADM_PROPERTIES_PATH')
 config_parser.read(adm_properties_path)
-#config_parser.read('adm.properties')
 kafka_properties = config_parser['ACL_CONFIG']
 namespace = os.getenv('NAMESPACE', "wowsome")
 rest_url = os.getenv('REST_URL', "http://kafka.wowsome.svc.cluster.local:8090")
-#cluster_id = os.getenv('CLUSTER_ID', "QNCeE1QyS1yGuW6_Vb3VRw")
+# cluster_id = os.getenv('CLUSTER_ID', "QNCeE1QyS1yGuW6_Vb3VRw")
 url = f"{rest_url}/kafka/v3/clusters"
 response = rq.get(url)
 if response.status_code == 200:
@@ -41,7 +40,6 @@ if response.status_code == 200:
     # print(f"Cluster ID: {cluster_id}")
 else:
     logging.error(f"Failed to retrieve CLUSTER_ID. Status code: {response.status_code}")
-
 # Kafka AdminClient configuration
 kafka_admin_client = AdminClient({
     'bootstrap.servers': kafka_properties['bootstrap.servers'],
@@ -56,44 +54,46 @@ kafka_admin_client = AdminClient({
 def apply_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope):
     try:
         restype_enum = ResourceType[restype.upper()]
-        operation_enum = AclOperation[operation.upper()]
         permission_type_enum = AclPermissionType[permission_type.upper()]
         pattern_type_enum = ResourcePatternType[resource_pattern_type.upper()]
 
-        for name in name:
-            acl_binding = AclBinding(
-                restype_enum,
-                name,
-                pattern_type_enum,
-                principal,
-                '*',
-                operation_enum,
-                permission_type_enum
-            )
-            kafka_admin_client.create_acls([acl_binding])
-            logging.info(f"Applied ACL: {principal} {permission_type} {operation} on {restype}:{name} with pattern {resource_pattern_type} in {scope}")
+        for op in operation:
+            operation_enum = AclOperation[op.upper()]
+            for n in name:
+                acl_binding = AclBinding(
+                    restype_enum,
+                    n,
+                    pattern_type_enum,
+                    principal,
+                    '*',
+                    operation_enum,
+                    permission_type_enum
+                )
+                kafka_admin_client.create_acls([acl_binding])
+                logging.info(f"Applied ACL: {principal} {permission_type} {op} on {restype}:{n} with pattern {resource_pattern_type} in {scope}")
     except Exception as e:
         logging.error(f"Failed to apply ACL: {e}")
 
 def delete_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope):
     try:
         restype_enum = ResourceType[restype.upper()]
-        operation_enum = AclOperation[operation.upper()]
         permission_type_enum = AclPermissionType[permission_type.upper()]
         pattern_type_enum = ResourcePatternType[resource_pattern_type.upper()]
 
-        for name in name:
-            acl_binding_filter = AclBindingFilter(
-                restype_enum,
-                name,
-                pattern_type_enum,
-                principal,
-                '*',
-                operation_enum,
-                permission_type_enum
-            )
-            kafka_admin_client.delete_acls([acl_binding_filter])
-            logging.info(f"Deleted ACL: {principal} {permission_type} {operation} on {restype}:{name} with pattern {resource_pattern_type} in {scope}")
+        for op in operation:
+            operation_enum = AclOperation[op.upper()]
+            for n in name:
+                acl_binding_filter = AclBindingFilter(
+                    restype_enum,
+                    n,
+                    pattern_type_enum,
+                    principal,
+                    '*',
+                    operation_enum,
+                    permission_type_enum
+                )
+                kafka_admin_client.delete_acls([acl_binding_filter])
+                logging.info(f"Deleted ACL: {principal} {permission_type} {op} on {restype}:{n} with pattern {resource_pattern_type} in {scope}")
     except Exception as e:
         logging.error(f"Failed to delete ACL: {e}")
 
@@ -123,7 +123,6 @@ def get_kafka_acl(namespace=None, acl_name=None):
     version = "v1alpha1"
     plural = "kafkaacls"
     name = acl_name
-    
     try:
         if namespace:
             kafka_acl = api.get_namespaced_custom_object(group, version, namespace, plural, name)
@@ -140,7 +139,7 @@ def get_kafka_acl(namespace=None, acl_name=None):
             logging.error(f"Error retrieving KafkaACL: {e}")
 # get_kafka_acl(namespace, "my-kafka-acl-ns-v1")
 
-def ns_kafka_acl(principal, operation):
+def ns_kafka_acl(principal):
     URL = f"{rest_url}/kafka/v3/clusters/{cluster_id}/acls"
     try:
         response = rq.get(url=URL)
@@ -151,11 +150,12 @@ def ns_kafka_acl(principal, operation):
 
     data = response.json().get("data", [])
     if not data:
-        logging.info("No data found in the response.")
+        logging.warning("No data found in the response.")
         sys.exit(1)
 
-    ns_resource_names = [acl.get("resource_name") for acl in data if acl.get("principal") == principal and acl.get("operation") == operation]
-    return ns_resource_names
+    ns_resource_names = list(set(acl.get("resource_name") for acl in data if acl.get("principal") == principal))
+    ns_operations = list(set(acl.get("operation") for acl in data if acl.get("principal") == principal))
+    return ns_resource_names, ns_operations
 
 def process_event(event, scope):
     event_type = event['type']
@@ -163,7 +163,6 @@ def process_event(event, scope):
     acl_name = kafka_acl['metadata']['name']
     spec = kafka_acl['spec']
     # print(spec)
-
     try:
         principal = spec['principal']
         restype = spec['resourceType']
@@ -174,20 +173,41 @@ def process_event(event, scope):
     except KeyError as e:
         logging.error(f"KeyError: {e}")
         return
+    # meta operations
+    operation_mapping = {
+        'CONSUMER': ['READ', 'DESCRIBE', 'DESCRIBE_CONFIGS'],
+        'PRODUCER': ['WRITE', 'DESCRIBE', 'DESCRIBE_CONFIGS'],
+        'PROSUMER': ['READ', 'WRITE', 'DESCRIBE', 'DESCRIBE_CONFIGS']
+    }
+    meta_operations = set()
+    for operation in operation:
+        if operation in operation_mapping:
+            meta_operations.update(operation_mapping[operation])
+        else:
+            meta_operations.add(operation)
+    operation = list(meta_operations)
 
     if event_type == 'ADDED':
         apply_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
     elif event_type == 'MODIFIED':
         cr_resource_names = get_kafka_acl(namespace, acl_name)
-        ns_resource_names = ns_kafka_acl(principal, operation)
+        ns_resource_names, ns_operations = ns_kafka_acl(principal)
         cr_diff = [item for item in cr_resource_names if item not in ns_resource_names]
         ns_diff = [item for item in ns_resource_names if item not in cr_resource_names]
-        # print(cr_diff, ns_diff)
+        op_ns_diff = [item for item in ns_operations if item not in operation]
+        op_cr_diff = [item for item in operation if item not in ns_operations]
+        # print(operation, op_ns_diff, op_cr_diff)
         if cr_diff:
             name=cr_diff
             apply_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
+        elif op_cr_diff:
+            operation=op_cr_diff
+            apply_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
         if ns_diff:
             name=ns_diff
+            delete_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
+        elif op_ns_diff:
+            operation=op_ns_diff
             delete_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
     elif event_type == 'DELETED':
         delete_kafka_acl(principal, restype, name, operation, permission_type, resource_pattern_type, scope)
