@@ -11,5 +11,3 @@ secret:
 # ENV is mandatory for acl-operator
 env:
   ADM_PROPERTIES_PATH: /mnt/sslcerts/adm.properties
-  REST_URL: http://kafka.wowsome.svc.cluster.local:8090
-

@@ -17,8 +17,6 @@ spec:
           fieldPath: metadata.namespace
     - name: ADM_PROPERTIES_PATH
       value: /mnt/sslcerts/adm.properties
-    - name: REST_URL
-      value: http://kafka.wowsome.svc.cluster.local:8090
     volumeMounts:
     - name: acl-operator-properties
       mountPath: /mnt/sslcerts

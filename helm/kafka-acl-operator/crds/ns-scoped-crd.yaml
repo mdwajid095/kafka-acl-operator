@@ -1,9 +1,9 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: kafkaacls.emp.cluster.com
+  name: kafkaacls.emp.namespaced.com
 spec:
-  group: emp.cluster.com
+  group: emp.namespaced.com
   versions:
     - name: v1alpha1
       served: true
@@ -24,15 +24,18 @@ spec:
                   items:
                     type: string
                 operation:
-                  type: string
+                  type: array
+                  items:
+                    type: string
                 permissionType:
                   type: string
                 patternType:
                   type: string
-  scope: Cluster
+  scope: Namespaced
   names:
     plural: kafkaacls
     singular: kafkaacl
     kind: KafkaACL
     shortNames:
+      - acl
       - acls

@@ -1,13 +1,14 @@
 apiVersion: emp.cluster.com/v1alpha1
 kind: KafkaACL
 metadata:
-  name: my-kafka-acl-cl
+  name: my-kafka-acl-cl-v1
+  namespace: confluent
 spec:
-  principal: "User:alice"
+  principal: "User:acl-test"
   resourceType: "TOPIC"
   resourceName:
     - "tef.de.testing-v1"
     - "tef.de.testing-v2"
-  operation: "READ"
+  operation: ["WRITE"]
   permissionType: "ALLOW"
   patternType: "LITERAL"
