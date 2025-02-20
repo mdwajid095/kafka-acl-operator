@@ -12,8 +12,21 @@ Creating fully qualified name for the ACL CRs
 */}}
 {{- define "generateName" }}
 {{- $parts := splitList ":" .principal -}}
-{{- $secondPart := index $parts 1 -}}
-{{- print ($secondPart | lower) "-" (.operation | lower) -}}
+{{- $secondPart := index $parts 1 | lower -}}
+{{- $operations := "" -}}
+{{- range $index, $op := .operation -}}
+{{- if $index -}}
+{{- $operations = printf "%s-%s" $operations (lower $op) -}}
+{{- else -}}
+{{- $operations = lower $op -}}
+{{- end -}}
+{{- end -}}
+{{- if .resourceType -}}
+{{- $resourceType := .resourceType | replace "_" "-" | lower -}}
+{{- print $secondPart "-" $operations "-" $resourceType -}}
+{{- else -}}
+{{- print $secondPart "-" $operations -}}
+{{- end -}}
 {{- end -}}
 
 Create a default fully qualified app name.

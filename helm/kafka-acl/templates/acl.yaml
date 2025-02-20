@@ -5,7 +5,7 @@ metadata:
   name: {{ include "generateName" . }}
   namespace: {{ default $.Values.defaults.namespace .namespace }}
   labels:
-    emp.telefonica.de/bus: {{ .bus }}
+    emp.telefonica.de/bus: {{ .bus | quote }}
     {{- include "emp-acl.labels" $ | nindent 4 }}
 spec:
   principal: {{ .principal | quote}}
@@ -14,7 +14,10 @@ spec:
     {{- range .resourceName }}
     - {{ . }}
     {{- end }}
-  operation: {{ .operation }}
+  operation:
+    {{- range .operation }}
+    - {{ . }}
+    {{- end }}
   permissionType: {{ default $.Values.defaults.permissionType .permissionType }}
   patternType: {{ default $.Values.defaults.patternType .patternType }}
 ---

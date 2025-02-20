@@ -10,5 +10,5 @@ kafkaACL:
       - "tef.de.testing-v1"
       - "tef.de.testing-v2"
       - "tef.de.testing-v3"
-    operation: "READ"
-    bus: WOWUS-3852
+    operation: ["READ", "WRITE"]
+    bus: WPCSUE-3852

@@ -23,5 +23,16 @@ kubectl -n wowsome create secret generic acl-operator-secret \
 kubectl apply -f -
 ```
 
-## note
-We have two CRDs to manage ACLs either at namespace level or k8s cluster level. So, as per requirement apply only one CRD at a time in k8s cluster.
+## feature
+This operator supports all the feature supported by kafka. And we can pass array of resourceName and operation. See example in file `acl.yaml`.
+
+## extra feature
+This operator supports the following meta operations, which are combinations of multiple operations. The meta operations are defined as follows:
+```
+# meta operations
+operation_mapping = {
+    'CONSUMER': ['READ', 'DESCRIBE', 'DESCRIBE_CONFIGS'],
+    'PRODUCER': ['WRITE', 'DESCRIBE', 'DESCRIBE_CONFIGS'],
+    'PROSUMER': ['READ', 'WRITE', 'DESCRIBE', 'DESCRIBE_CONFIGS']
+}
+```

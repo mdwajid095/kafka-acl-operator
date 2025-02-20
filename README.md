@@ -24,8 +24,8 @@ Home-page: https://github.com/kubernetes-client/python
 Author: Kubernetes
 
 ```
-## info
-Any files or resources with the prefix or suffix `ns` indicate they are namespaced scoped, while those with `cl` indicate they are cluster scoped.
+## feature
+This operator supports all the feature supported by kafka. And we can pass array of resourceName and operation. See example in file `acl.yaml`.
 
 ## extra feature
 This operator supports the following meta operations, which are combinations of multiple operations. The meta operations are defined as follows:
@@ -41,12 +41,7 @@ operation_mapping = {
 ## docker
 Image is also available for acl operator with below naming convention.
 
-Docker image for namespaced scoped: `docker pull mdwajid095/kafka-acl-operator/ns:v1`
-
-Docker image for cluster scoped: `docker pull mdwajid095/kafka-acl-operator/cl:v1`
-
-## note
-Cluster scoped feature is still in testing phase.
+Docker image for namespaced scoped: `docker pull mdwajid095/kafka-acl-operator:v1`
 
 ## Conclusion
 
