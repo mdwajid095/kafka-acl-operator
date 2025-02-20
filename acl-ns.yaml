@@ -7,7 +7,6 @@ spec:
   principal: "User:acl-test"
   resourceType: "TOPIC"
   resourceName:
-    - "tef.de.topas.BarringEvents-MM-v1"
     - "tef.de.testing-v1"
     - "tef.de.testing-v2"
   operation: ["READ"]
