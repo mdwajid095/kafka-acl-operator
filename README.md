@@ -10,7 +10,7 @@ Python 3.11.5
 
 $ pip show confluent-kafka
 Name: confluent-kafka
-Version: 2.4.0
+Version: 2.8.0
 Summary: Confluent's Python client for Apache Kafka
 Home-page: https://github.com/confluentinc/confluent-kafka-python
 Author: Confluent Inc
