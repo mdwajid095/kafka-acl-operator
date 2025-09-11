@@ -30,9 +30,29 @@ operation_mapping = {
     'PROSUMER': ['READ', 'WRITE', 'DESCRIBE', 'DESCRIBE_CONFIGS']
 }
 ```
+Environment variables (defaults in parentheses):
+```
+  ADM_PROPERTIES_PATH       (required) path to .properties with [ACL_CONFIG]
+  NAMESPACE                 ('confluent') K8s namespace to watch
+  K8S_GROUP                 ('emp.namespaced.com')
+  K8S_VERSION               ('v1alpha1')
+  K8S_PLURAL                ('kafkaacls')
+  AUTHORITATIVE             ('true') delete extras on reconcile
+  COLLAPSE_TO_ALL           ('true') ALL supersedes granular ops
+  FULL_RECONCILE_INTERVAL_SECONDS ('0') 0 disables periodic sweep
+  LOG_LEVEL                 ('INFO') DEBUG|INFO|WARN|ERROR
+  LOG_FORMAT                ('JSON') JSON|TEXT
+  WATCH_TIMEOUT_SECONDS     ('300') long poll timeout
+  MAX_ACL_BATCH_SIZE        ('100') max ACLs per AdminClient call
+  MAX_RETRIES               ('5') max retries for Admin operations
+  BACKOFF_BASE_SECONDS      ('0.5') initial backoff
+  BACKOFF_MAX_SECONDS       ('8') cap for backoff
+  JITTER_SECONDS            ('0.2') random jitter added to backoff sleeps
+  DRY_RUN                   ('false') if true, only logs actions (no writes)
+```
 
 ## docker
 Image is also available for acl operator with below naming convention.
 
-Docker image for namespaced scoped: `docker pull mdwajid095/kafka-acl-operator:v1`
+Docker image for namespaced scoped: `docker pull mdwajid095/kafka-acl-operator:v1-final`
 
