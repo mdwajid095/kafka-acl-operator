@@ -1,7 +1,7 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: kafka-acl-role
+  name: kafka-acl-role-{{ .Release.Namespace }}
 rules:
 - apiGroups: ["emp.namespaced.com"]
   resources: ["kafkaacls"]
@@ -17,5 +17,5 @@ subjects:
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: kafka-acl-role
+  name: kafka-acl-role-{{ .Release.Namespace }}
   apiGroup: rbac.authorization.k8s.io

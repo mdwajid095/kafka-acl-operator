@@ -4,6 +4,12 @@ metadata:
   name: kafkaacls.emp.namespaced.com
 spec:
   group: emp.namespaced.com
+  scope: Namespaced
+  names:
+    plural: kafkaacls
+    singular: kafkaacl
+    kind: KafkaACL
+    shortNames: [acl, acls]
   versions:
     - name: v1alpha1
       served: true
@@ -19,23 +25,53 @@ spec:
                   type: string
                 resourceType:
                   type: string
+                  enum: [TOPIC, GROUP, TRANSACTIONAL_ID, CLUSTER]
                 resourceName:
                   type: array
                   items:
                     type: string
+                  x-kubernetes-list-type: set
+                  minItems: 1
+                  description: >
+                    List of resource names. Use ["*"] to denote wildcard (must be the only entry).
+                  x-kubernetes-validations:
+                    - rule: "!(self.exists(e, e == '*') && self.size() != 1)"
+                      message: "If '*' is used, it must be the only entry in resourceName."
                 operation:
                   type: array
+                  x-kubernetes-list-type: set # no dublicates
+                  minItems: 1
                   items:
                     type: string
+                    enum:
+                      # Kafka-native ops
+                      - ALL
+                      - READ
+                      - WRITE
+                      - CREATE
+                      - DELETE
+                      - ALTER
+                      - DESCRIBE
+                      - CLUSTER_ACTION
+                      - DESCRIBE_CONFIGS
+                      - ALTER_CONFIGS
+                      - IDEMPOTENT_WRITE
+                      - CREATE_TOKENS
+                      - DESCRIBE_TOKENS
+                      # Meta-roles
+                      - PRODUCER
+                      - CONSUMER
+                      - PROSUMER
                 permissionType:
                   type: string
+                  enum: [ALLOW, DENY]
                 patternType:
                   type: string
-  scope: Namespaced
-  names:
-    plural: kafkaacls
-    singular: kafkaacl
-    kind: KafkaACL
-    shortNames:
-      - acl
-      - acls
+                  enum: [LITERAL, PREFIXED]
+              required:
+                - principal
+                - resourceType
+                - resourceName
+                - operation
+                - permissionType
+                - patternType
