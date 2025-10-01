@@ -12,13 +12,13 @@ spec:
   resourceType: {{ default $.Values.defaults.resourceType .resourceType }}
   resourceName:
     {{- range .resourceName }}
-    - {{ . }}
+    - {{ . | toString | quote }}
     {{- end }}
   operation:
     {{- range .operation }}
-    - {{ . }}
+    - {{ . | toString | upper }}
     {{- end }}
-  permissionType: {{ default $.Values.defaults.permissionType .permissionType }}
-  patternType: {{ default $.Values.defaults.patternType .patternType }}
+  permissionType: {{ default $.Values.defaults.permissionType .permissionType | upper }}
+  patternType: {{ default $.Values.defaults.patternType .patternType | upper }}
 ---
 {{- end }}
